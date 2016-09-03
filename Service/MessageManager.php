@@ -222,7 +222,7 @@ class MessageManager {
 
 	/* creation methods */
 	
-	public function createConversation(User $creator, $topic, Conversation $parent=null, Realm $realm=null) {
+	public function createConversation(User $creator, $topic, Conversation $parent=null, Realm $realm=null, $system=null) {
 		$conversation = new Conversation;
 		if (!$topic) { $topic=""; }
 		$conversation->setTopic($topic);
@@ -239,6 +239,7 @@ class MessageManager {
 		$meta->setUnread(0);
 		$meta->setConversation($conversation);
 		$meta->setUser($creator);
+		$meta->setSystem($system);
 
 		$owner = $this->em->getRepository('MsgBundle:Right')->findOneByName('owner');
 		$meta->addRight($owner);
