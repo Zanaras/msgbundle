@@ -15,13 +15,15 @@ class NewConversationType extends AbstractType {
 	private $character;
 	private $settlement;
 	private $realm;
+	private $system;
 
-	public function __construct($recipients, $distance, $character, $settlement=null, $realm=null) {
+	public function __construct($recipients, $distance, $character, $settlement=null, $realm=null, $system=null) {
 		$this->recipients = $recipients;
 		$this->distance = $distance;
 		$this->character = $character;
 		$this->settlement = $settlement;
 		$this->realm = $realm;
+		$this->system = $system;
 	}
 
 	public function getName() {
