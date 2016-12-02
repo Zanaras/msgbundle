@@ -62,7 +62,33 @@ class ManageController extends Controller {
 			return new JsonResponse(false);
 		}
 	}
+	
+	/**
+		* @Route("/participants_add", name="cmsg_participant_add")
+		*/
+	
+	public function participantsaddAction(Request $request) {
+		$user = $this->get('message_manager')->getCurrentUser();
+		$em = $this->getDoctrine()->getManager();
+		$meta = $em->getRepository('MsgBundle:ConversationMetadata')->find($request->request->get('meta'));
+		$conversation = $user->getConversation();
 
+		if (!$meta || $meta->getUser() != $user) {
+			throw new AccessDeniedHttpException($this->get('translator')->trans('error.conversation.noaccess', array(), "MsgBundle"));
+		}
+		if (!$meta->hasRightByName('remove') && !$meta->hasRightByName('owner')) {
+			throw new AccessDeniedHttpException($this->get('translator')->trans('error.conversation.noright', array(), "MsgBundle"));			
+		}
+
+		$target = $em->getRepository('MsgBundle:User')->find($request->request->get('id'));
+		if ($target_meta && !$target_meta->hasRightByName('owner')) {
+			$this->get('message_manager')->addParticipant($conversation, $target);
+			$em->flush();
+			return new JsonResponse(true); 
+		} else {
+			return new JsonResponse(false);
+		}
+	}
 
 	/**
 		* @Route("/conversation/leave", name="cmsg_leave", defaults={"_format"="json"})
